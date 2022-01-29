@@ -1,0 +1,324 @@
+---
+title: " "
+author: " "
+date: " "
+output:
+  pdf_document: default
+  html_document: default
+  
+--- 
+
+\begin{centering}
+---
+
+
+\vspace{2 cm}
+
+\Huge
+Istanbul Technical University
+
+\vspace{1.5 cm}
+\Huge
+Faculty of Science and Letters
+
+\vspace{1.5 cm}
+\Huge
+Relationship between Crime Rates and Income Levels
+
+\vspace{1.5 cm}
+\Huge
+Final Report
+
+
+
+\vspace{1.5 cm}
+\Large
+Melisa Kütük \\
+
+
+Çağrı Gökpunar\\
+
+
+Team Name: ananas\\
+
+
+
+\vspace{1.5 cm}
+Mathematical Engineeering \\
+
+
+MAT381E \\
+
+
+Asst. Prof. Gül İnan
+
+
+
+January 2022
+
+\end{centering}
+
+--- 
+
+
+
+
+
+## Project Description
+* To define whether crimes rates are related to the income levels or not, generating ideas for avert these crimes if it is. 
+
+## Project goal & social problem addressed
+* Show that there is a relationship between the income levels and crime rates.The social problem in this project is the low income distribution and the high crime rate. As a result of this project, it is important to prevent crimes and increase income level.
+
+
+```{r}
+library(tidyverse)
+options(warn=-1)
+```
+
+## Project data
+
+  *Crime:
+  
+  1. Homicide rates
+  2. Sexual abuse and rape rates
+ 
+  *Economy:
+   
+  1. GDP rates
+  2. Employment
+  3. Gini index
+  
+ 
+ Variables in crime:
+  Year, gender, cause, countries, location etc.
+ 
+ Variables in economy:
+  Work hours, countries, GDP, Inequality Index etc.
+ 
+
+## Dataset Analyzing
+First of all, data on the subject were collected. Then, unnecessary data from these data were eliminated.Detailed information about dataset analyzing was given in the interim report.
+
+
+* The datasets about crime rates are:
+- Murders2005
+- Murders2006
+- Murders2007
+- Murders2008
+- Murders2009
+- Murders2010
+- Rapes2005
+- Rapes2006
+- Rapes2007
+- Rapes2008
+- Rapes2009
+- Rapes2010
+
+
+## Importing datasets about income levels and renaming them
+```{r}
+employment <- read.csv("datasets/ANHRS_31102021130035527.csv")
+gpd <- read.csv("datasets/API_NY.GDP.MKTP.CD_DS2_en_csv_v2_3158872.csv")
+gini <- read.csv("datasets/API_SI.POV.GINI_DS2_en_csv_v2_3158890.csv")
+homicide <- read.csv("datasets/API_VC.IHR.PSRC.P5_DS2_en_csv_v2_3161002.csv")
+sexualviolence <- read.csv("datasets/cts_sexual_violence_2012.csv")
+```
+
+## Dataframes
+```{r}
+head(employment,5)
+head(gpd,5)
+head(gini,5)
+head(homicide,5)
+head(sexualviolence,5)
+```
+
+* GPD, Gini and Homicide's headers needs to be replaced with 4th row. Sexual violence's first row needs to be deleted.
+
+```{r}
+names(gpd) <- as.matrix(gpd[4, ])
+gpd <- gpd[-4, ]
+gpd[] <- lapply(gpd, function(x) type.convert(as.character(x)))
+gpd <- gpd[-1, ]
+gpd <- gpd[-1, ]
+gpd <- gpd[-1, ]
+row.names(gpd) <- NULL
+head(gpd)
+```
+
+```{r}
+names(gini) <- as.matrix(gini[4, ])
+gini <- gini[-4, ]
+gini[] <- lapply(gini, function(x) type.convert(as.character(x)))
+gini <- gini[-1, ]
+gini <- gini[-1, ]
+gini <- gini[-1, ]
+row.names(gini) <- NULL
+head(gini)
+```
+
+```{r}
+names(homicide) <- as.matrix(homicide[4, ])
+homicide <- homicide[-4, ]
+homicide[] <- lapply(homicide, function(x) type.convert(as.character(x)))
+homicide <- homicide[-1, ]
+homicide <- homicide[-1, ]
+homicide <- homicide[-1, ]
+row.names(homicide) <- NULL
+head(homicide)
+```
+
+```{r}
+sexualviolence <- sexualviolence[-1, ]
+head(sexualviolence)
+```
+
+## Importing datasets about crime rates and renaming them
+```{r}
+Murders2005 <- read.csv("data/Murders2005.csv")
+Murders2006 <- read.csv("data/Murders2006.csv")
+Murders2007 <- read.csv("data/Murders2007.csv")
+Murders2008 <- read.csv("data/Murders2008.csv")
+Murders2009 <- read.csv("data/Murders2009.csv")
+Murders2010 <- read.csv("data/Murders2010.csv")
+
+Rapes2005 <- read.csv("data/Rapes2005.csv")
+Rapes2006 <- read.csv("data/Rapes2006.csv")
+Rapes2007 <- read.csv("data/Rapes2007.csv")
+Rapes2008 <- read.csv("data/Rapes2008.csv")
+Rapes2009 <- read.csv("data\\Rapes2009.csv")
+Rapes2010 <- read.csv("data/Rapes2010.csv")
+
+```
+
+## Jointing datasets by using merge function
+```{r}
+df05= merge(x = Murders2005, y = Rapes2005, by = "Country")
+head(df05)
+df06= merge(x = Murders2006, y = Rapes2006, by = "Country")
+head(df06)
+df07= merge(x = Murders2007, y = Rapes2007, by = "Country")
+head(df07)
+df08= merge(x = Murders2008, y = Rapes2008, by = "Country")
+head(df08)
+df09= merge(x = Murders2009, y = Rapes2009, by = "Country")
+head(df09)
+df10= merge(x = Murders2010, y = Rapes2010, by = "Country")
+head(df10)
+
+```
+
+## Changing the column names and removing the year
+```{r}
+MR2005<-subset(df05, select=-c(Date.x,Date.y))
+MR2006<-subset(df06, select=-c(Date.x,Date.y))
+MR2007<-subset(df07, select=-c(Date.x,Date.y))
+MR2008<-subset(df08, select=-c(Date.x,Date.y))
+MR2009<-subset(df09, select=-c(Date.x,Date.y))
+MR2010<-subset(df10, select=-c(Date.x,Date.y))
+MR0506<-merge(MR2005,MR2006,by='Country')
+MR0708<-merge(MR2007,MR2008,by='Country')
+MR0910<-merge(MR2009,MR2010,by='Country')
+MR1<-merge(MR0506,MR0708,by='Country')
+MR<-merge(MR1,MR0910,by='Country')
+MR<-rename(MR, Murders2005=Amount.x.x.x, Rape2005=Amount.y.x.x, 
+       Murders2006=Amount.x.y.x, Rape2006=Amount.y.y.x, 
+       Murders2007=Amount.x.x.y, Rape2007=Amount.y.x.y, 
+       Murders2008=Amount.x.y.y, Rape2008=Amount.y.y.y, 
+       Murders2009=Amount.x.x, Rape2009=Amount.y.x, 
+       Murders2010=Amount.x.y, Rape2010=Amount.y.y)
+```
+
+## The final results
+```{r}
+head(MR)
+```
+
+
+* The economical data
+```{r}
+employmentcopy<-employment
+employmentcopy<-filter(employment, Employment.status == 'Total employment')
+EMP<-subset(employmentcopy, select=c(Country,Time,Value))
+EMP2010 <- filter(EMP, Time == 2010)
+EMP2010<-subset(EMP2010, select=-c(Time))
+EMP2010<-rename(EMP2010, Employment2010=Value)
+
+GPD2005<-data.frame(gpd[, c(1,50)])
+GPD2005<-rename(GPD2005, Country=Country.Name, GPD2005=X2005)
+```
+One can see that only years 2005 and 2010 are common in merged data frames. Only the data of 2005 and 2010 were kept and the data of the other years were deleted
+
+```{r}
+MR0510<-subset(MR, select=c(Country,Murders2005,Rape2005,Murders2010,Rape2010))
+head(MR0510)
+```
+
+## Merging with the economical values
+* This is the final data frame to make analyzes from.
+```{r}
+prefinal<-merge(EMP2010,MR0510, by='Country')
+FINAL<-merge(prefinal,GPD2005, by='Country')
+head(FINAL)
+```
+
+Before continuing, checking the types of data stored in FINAL
+```{r}
+sapply(FINAL, mode)
+```
+
+## Converting characters to numerical values
+```{r}
+cols.num <- c("Murders2005","Rape2005","Murders2010","Rape2010")
+FINAL[cols.num] <- sapply(FINAL[cols.num],as.numeric)
+sapply(FINAL, mode)
+```
+
+## Graphing
+
+
+```{r}
+ggplot(FINAL, aes(x=GPD2005, y=Murders2005, color=Country)) + 
+    geom_point(size=4) + xlim(0, 3*10^12)
+```
+
+## Result
+
+Although the data is concentrated in a certain region, a positive correlation is observed between murder counts and GPD. That is, as the number of murders increases, so does the GPD.
+
+```{r}
+ggplot(FINAL, aes(x=GPD2005, y=Rape2005, color=Country)) + 
+    geom_point(size=4) + xlim(0, 125*10^10)
+```
+
+## Result
+Although there is not much difference between the GPDs, positive correlation is also seen in this graph. Canada is located here in a separate position from other countries in terms of GPD.
+
+```{r}
+ggplot(FINAL, aes(x=Employment2010, y=Murders2010, color=Country)) + 
+    geom_point(size=4)
+```
+
+## Result
+Positive correlation is seen in this graph. Germany has a very high value in homicides and low in employment. For this reason, it is in a different position from other countries.
+
+```{r}
+ggplot(FINAL, aes(x=Employment2010, y=Rape2010, color=Country)) + 
+    geom_point(size=4)
+```
+
+## Result
+Unlike other graphs, there is no positive correlation in this graph. The employment rate increases as the rape rate decreases.
+
+
+
+## Conclusion.
+Except for the last chart, there was a positive increase in other charts. The relationship between GPD and employment rate with crime rates is astounding. In the intervening 5 years, it has been observed that there is an awareness of rape in countries with high income levels.
+
+## References.
+* https://www.numbeo.com/crime/rankings_by_country.jsp?region=150&title=2019
+* https://data.worldbank.org/indicator/SI.POV.GINI
+* https://microdata.worldbank.org/index.php/catalog/1790/get-microdata
+
+---
