@@ -243,7 +243,7 @@ employmentcopy<-filter(employment, Employment.status == 'Total employment')
 EMP<-subset(employmentcopy, select=c(Country,Time,Value))
 EMP2010 <- filter(EMP, Time == 2010)
 EMP2010<-subset(EMP2010, select=-c(Time))
-EMP2010<-rename(EMP2010, Employment2010=Value)
+EMP2010<-rename(EMP2010, Unemployment2010=Value)
 
 GPD2005<-data.frame(gpd[, c(1,50)])
 GPD2005<-rename(GPD2005, Country=Country.Name, GPD2005=X2005)
@@ -274,47 +274,41 @@ cols.num <- c("Murders2005","Rape2005","Murders2010","Rape2010")
 FINAL[cols.num] <- sapply(FINAL[cols.num],as.numeric)
 sapply(FINAL, mode)
 ```
-
-## Graphing
-
-
+* Result
+Although the data is concentrated in a certain region, a positive correlation is observed between murder counts and GPD. That is, as the number of murders increases, so does the GPD.
 ```{r}
 ggplot(FINAL, aes(x=GPD2005, y=Murders2005, color=Country)) + 
     geom_point(size=4) + xlim(0, 3*10^12)
 ```
 
-## Result
-
-Although the data is concentrated in a certain region, a positive correlation is observed between murder counts and GPD. That is, as the number of murders increases, so does the GPD.
-
+## Graphing 2
+* Result
+Although there is not much difference between the GPDs, positive correlation is also seen in this graph. Canada is located here in a separate position from other countries in terms of GPD.
 ```{r}
 ggplot(FINAL, aes(x=GPD2005, y=Rape2005, color=Country)) + 
     geom_point(size=4) + xlim(0, 125*10^10)
 ```
 
-## Result
-Although there is not much difference between the GPDs, positive correlation is also seen in this graph. Canada is located here in a separate position from other countries in terms of GPD.
-
+## Graphing 3
+* Result
+Positive correlation is seen in this graph. Germany has a very high value in homicides and low in unemployment. For this reason, it is in a different position from other countries.
 ```{r}
-ggplot(FINAL, aes(x=Employment2010, y=Murders2010, color=Country)) + 
+ggplot(FINAL, aes(x=Unemployment2010, y=Murders2010, color=Country)) + 
     geom_point(size=4)
 ```
 
-## Result
-Positive correlation is seen in this graph. Germany has a very high value in homicides and low in employment. For this reason, it is in a different position from other countries.
 
-```{r}
-ggplot(FINAL, aes(x=Employment2010, y=Rape2010, color=Country)) + 
-    geom_point(size=4)
-```
-
-## Result
+## Graphing 4
+* Result
 Unlike other graphs, there is no positive correlation in this graph. The employment rate increases as the rape rate decreases.
-
-
+```{r}
+ggplot(FINAL, aes(x=Unemployment2010, y=Rape2010, color=Country)) + 
+    geom_point(size=4)
+```
 
 ## Conclusion.
-Except for the last chart, there was a positive increase in other charts. The relationship between GPD and employment rate with crime rates is astounding. In the intervening 5 years, it has been observed that there is an awareness of rape in countries with high income levels.
+With the exception of the third chart, similar results are obtained with the other charts. The relationship between GPD and crime rates is surprising. In 2010, it was observed that as unemployment rates increased, murder increased, but rape rates decreased. In the past 5 years, it has been observed that there is an awareness of rape in high-income countries.
+
 
 ## References.
 * https://www.numbeo.com/crime/rankings_by_country.jsp?region=150&title=2019

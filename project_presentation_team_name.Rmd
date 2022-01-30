@@ -241,7 +241,7 @@ employmentcopy<-filter(employment, Employment.status == 'Total employment')
 EMP<-subset(employmentcopy, select=c(Country,Time,Value))
 EMP2010 <- filter(EMP, Time == 2010)
 EMP2010<-subset(EMP2010, select=-c(Time))
-EMP2010<-rename(EMP2010, Employment2010=Value)
+EMP2010<-rename(EMP2010, Unemployment2010=Value)
 GPD2005<-data.frame(gpd[, c(1,50)])
 GPD2005<-rename(GPD2005, Country=Country.Name, GPD2005=X2005)
 ```
@@ -262,7 +262,7 @@ prefinal<-merge(EMP2010,MR0510, by='Country')
 FINAL<-merge(prefinal,GPD2005, by='Country')
 head(FINAL)
 ```
-##Before continuing, checking the types of data stored in FINAL
+## Before continuing, checking the types of data stored in FINAL
 ```{r}
 sapply(FINAL, mode)
 ```
@@ -291,9 +291,9 @@ ggplot(FINAL, aes(x=GPD2005, y=Rape2005, color=Country)) +
 
 ## Graphing 3
 * Result
-Positive correlation is seen in this graph. Germany has a very high value in homicides and low in employment. For this reason, it is in a different position from other countries.
+Positive correlation is seen in this graph. Germany has a very high value in homicides and low in unemployment. For this reason, it is in a different position from other countries.
 ```{r}
-ggplot(FINAL, aes(x=Employment2010, y=Murders2010, color=Country)) + 
+ggplot(FINAL, aes(x=Unemployment2010, y=Murders2010, color=Country)) + 
     geom_point(size=4)
 ```
 
@@ -302,12 +302,12 @@ ggplot(FINAL, aes(x=Employment2010, y=Murders2010, color=Country)) +
 * Result
 Unlike other graphs, there is no positive correlation in this graph. The employment rate increases as the rape rate decreases.
 ```{r}
-ggplot(FINAL, aes(x=Employment2010, y=Rape2010, color=Country)) + 
+ggplot(FINAL, aes(x=Unemployment2010, y=Rape2010, color=Country)) + 
     geom_point(size=4)
 ```
 
 ## Conclusion.
-Except for the last chart, there was a positive increase in other charts. The relationship between GPD and employment rate with crime rates is astounding. In the intervening 5 years, it has been observed that there is an awareness of rape in countries with high income levels.
+With the exception of the third chart, similar results are obtained with the other charts. The relationship between GPD and crime rates is surprising. In 2010, it was observed that as unemployment rates increased, murder increased, but rape rates decreased. In the past 5 years, it has been observed that there is an awareness of rape in high-income countries.
 
 ## References.
 * https://www.numbeo.com/crime/rankings_by_country.jsp?region=150&title=2019
